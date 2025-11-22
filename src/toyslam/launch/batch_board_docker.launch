@@ -17,12 +17,12 @@
 
     <arg name="gravity_magnitude" default="9.785" doc="Gravity acceleration magnitude (m/s^2)" />
 
-    <arg name="gps_log_path" default=" /data/gps_log.csv" />
-    <arg name="gt_log_path" default=" /data/gt_log.csv" />
-    <arg name="optimized_log_path" default=" /data/optimized_log.csv" />
-    <arg name="results_log_path" default=" /data/results_log.csv" />
-    <arg name="metrics_log_path" default=" /data/metrics_log.csv" />
-    <arg name="bias_log_path" default=" /data/bias_log.csv" />
+    <arg name="gps_log_path" default=" /data/results/gps_log.csv" />
+    <arg name="gt_log_path" default=" /data/results/gt_log.csv" />
+    <arg name="optimized_log_path" default=" /data/results/optimized_log.csv" />
+    <arg name="results_log_path" default=" /data/results/results_log.csv" />
+    <arg name="metrics_log_path" default=" /data/results/metrics_log.csv" />
+    <arg name="bias_log_path" default=" /data/results/bias_log.csv" />
     
     <arg name="gps_message_type" default="gnss_comm" />
 
