@@ -1,11 +1,13 @@
 #!/bin/bash
 
 # Define names for your image and container for easy reuse
-IMAGE_NAME="gnssboard-dev"
-CONTAINER_NAME="gnssboard_container"
+IMAGE_NAME="toyslam-dev"
+CONTAINER_NAME="toyslam_container"
 
-# Define local output directory (使用绝对路径)
-LOCAL_OUTPUT_DIR="$(find toyslam)/../data"
+# Define local output directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+LOCAL_OUTPUT_DIR="$PROJECT_ROOT/data"
 
 # Create local output directory if it doesn't exist
 mkdir -p "$LOCAL_OUTPUT_DIR"
