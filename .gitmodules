@@ -1,0 +1,3 @@
+[submodule "src/novatel_span_driver"]
+	path = src/novatel_span_driver
+	url = https://github.com/ros-drivers/novatel_span_driver.git
