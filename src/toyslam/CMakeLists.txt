@@ -21,7 +21,6 @@ find_package(catkin REQUIRED COMPONENTS
   tf2_ros
   nav_msgs
   geometry_msgs
-  visualization_msgs
   xmlrpcpp
   novatel_msgs
   gnss_comm
@@ -31,10 +30,6 @@ find_package(catkin REQUIRED COMPONENTS
 ## Find system dependencies
 find_package(Eigen3 REQUIRED)
 find_package(Ceres REQUIRED)
-find_package(Boost REQUIRED COMPONENTS system thread filesystem serialization)
-# find_package(gtsam_points REQUIRED)
-find_package(Gflags)
-find_package(Glog)
 
 
 ## Catkin specific configuration
@@ -47,7 +42,6 @@ catkin_package(
     tf2_ros 
     nav_msgs 
     geometry_msgs 
-    visualization_msgs
     xmlrpcpp
     novatel_msgs
     gnss_comm
@@ -63,17 +57,7 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
   ${EIGEN3_INCLUDE_DIR}
   ${CERES_INCLUDE_DIRS}
-  ${Boost_INCLUDE_DIRS}
-  # ${gtsam_points_INCLUDE_DIRS}
 )
-
-# Add GFLAGS and GLOG includes if found
-if(Gflags_FOUND)
-  include_directories(${GFLAGS_INCLUDE_DIRS})
-endif()
-if(Glog_FOUND)
-  include_directories(${GLOG_INCLUDE_DIRS})
-endif()
 
 ## Declare C++ executables
 add_executable(gnss_imu_sw_node src/gnss_imu_sw_node.cpp)
@@ -89,14 +73,6 @@ target_link_libraries(gnss_imu_sw_node
   ${catkin_LIBRARIES}
   ${CERES_LIBRARIES}
 )
-
-# Add GFLAGS and GLOG libraries if found
-if(Gflags_FOUND)
-  target_link_libraries(gnss_imu_sw_node ${GFLAGS_LIBRARIES})
-endif()
-if(Glog_FOUND)
-  target_link_libraries(gnss_imu_sw_node ${GLOG_LIBRARIES})
-endif()
 
 install(TARGETS gnss_imu_sw_node
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

@@ -27,14 +27,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ros-noetic-roslint \
     && rm -rf /var/lib/apt/lists/*
 
-# WORKDIR /root/third_party
-# RUN git clone https://github.com/koide3/gtsam_points.git && \
-#     cd gtsam_points && \
-#     mkdir build && cd build && \
-#     cmake .. -DCMAKE_BUILD_TYPE=Release && \
-#     make -j$(nproc) && \
-#     make install
-
 # --- Update the dynamic linker cache ---
 RUN echo "/usr/local/lib" > /etc/ld.so.conf.d/gtsam.conf && ldconfig
 
