@@ -30,7 +30,6 @@ class FactorAnalyzer:
             output_dir: Directory to save analysis plots
         """
         self.csv_file = csv_file_path
-        # 修改默认输出目录为当前工作目录
         self.output_dir = output_dir or os.getcwd()
         self.data = None
         self.setup_plotting()
@@ -52,11 +51,10 @@ class FactorAnalyzer:
         
     def find_latest_csv(self, csv_dir=None):
         """Find the latest state CSV file in the given directory"""
-        # 如果没有指定目录，优先在当前目录查找，然后在默认输出目录查找
         if csv_dir is None:
             search_dirs = [
-                os.getcwd(),  # 当前工作目录
-                "/home/jay/batch_board/output"  # 默认输出目录作为备选
+                os.getcwd(),
+                "batch_board/output"
             ]
         else:
             search_dirs = [csv_dir]
@@ -170,13 +168,13 @@ class FactorAnalyzer:
         factor_cols = ['total_gnss_pos_factors', 'total_gnss_vel_factors', 
                       'total_imu_factors', 'total_bias_factors', 'total_prior_factors']
         
-        # 定义颜色和标签的映射
+        # Define colors and labels for each factor type
         factor_colors = {
-            'total_gnss_pos_factors': '#1f77b4',  # 蓝色
-            'total_gnss_vel_factors': '#ff7f0e',  # 橙色  
-            'total_imu_factors': '#2ca02c',       # 绿色
-            'total_bias_factors': '#d62728',      # 红色
-            'total_prior_factors': '#9467bd'      # 紫色
+            'total_gnss_pos_factors': '#1f77b4',  # Blue
+            'total_gnss_vel_factors': '#ff7f0e',  # Orange  
+            'total_imu_factors': '#2ca02c',       # Green
+            'total_bias_factors': '#d62728',      # Red
+            'total_prior_factors': '#9467bd'      # Purple
         }
         
         factor_labels = {
@@ -204,7 +202,7 @@ class FactorAnalyzer:
             ax2.legend(loc='upper left', framealpha=0.9)
             ax2.grid(True, alpha=0.3)
             
-            # 添加最终数量的文本标注
+            # Add final count annotations
             for col in valid_cols:
                 final_count = self.data[col].iloc[-1]
                 final_time = self.data['relative_time_min'].iloc[-1]
@@ -239,17 +237,17 @@ class FactorAnalyzer:
                         label=f'Trend: {z[0]:.1f} factors/keyframe')
                 ax3.legend()
             
-        # Plot 4: Factor增长速度 (每轮优化新增的因子数量)
+        # Plot 4: Factor growth per optimization round
         ax4 = axes[1, 1]
         
-        # 计算每轮优化新增的因子数量
+        # Calculate the number of new factors added per optimization round
         factor_cols_for_growth = ['total_gnss_pos_factors', 'total_gnss_vel_factors', 
                                  'total_imu_factors', 'total_bias_factors']
         
         valid_growth_cols = [col for col in factor_cols_for_growth if col in self.data.columns]
         
         if valid_growth_cols:
-            # 创建柱状图显示每轮新增的因子
+            # Create bar chart showing new factors added per optimization round
             x_positions = range(len(self.data))
             bar_width = 0.8
             bottom = np.zeros(len(self.data))
@@ -269,11 +267,11 @@ class FactorAnalyzer:
             }
             
             for col in valid_growth_cols:
-                # 计算每轮新增数量 (当前值 - 前一个值)
+                # Calculate the number of new factors added per optimization round (current value - previous value)
                 factor_diff = self.data[col].diff().fillna(self.data[col].iloc[0])
-                factor_diff = factor_diff.clip(lower=0)  # 确保非负值
+                factor_diff = factor_diff.clip(lower=0)  # Ensure non-negative values
                 
-                if factor_diff.sum() > 0:  # 只有当有增长时才绘制
+                if factor_diff.sum() > 0:  # Only plot if there is growth
                     ax4.bar(x_positions, factor_diff, 
                            bottom=bottom,
                            width=bar_width,
@@ -288,13 +286,13 @@ class FactorAnalyzer:
             ax4.legend(loc='upper right', framealpha=0.9)
             ax4.grid(True, alpha=0.3, axis='y')
             
-            # 设置x轴标签，每隔几个显示一次避免拥挤
+            # Set x-axis labels, showing every few to avoid clutter
             if len(self.data) > 20:
                 step = len(self.data) // 10
                 ax4.set_xticks(range(0, len(self.data), step))
                 ax4.set_xticklabels(range(0, len(self.data), step))
             
-            # 添加总数统计
+            # Add total count annotation
             total_new = bottom.sum()
             ax4.text(0.02, 0.98, f'Total new factors: {int(total_new)}', 
                     transform=ax4.transAxes, 
@@ -567,14 +565,13 @@ def main():
     parser = argparse.ArgumentParser(description='Analyze GNSS-IMU fusion factor graph data')
     parser.add_argument('--csv', '-c', type=str, help='Path to CSV state file')
     parser.add_argument('--output', '-o', type=str, 
-                       default=os.getcwd(),  # 修改默认输出目录为当前工作目录
+                       default=os.getcwd(),
                        help='Output directory for plots and reports (default: current directory)')
     parser.add_argument('--auto', '-a', action='store_true',
                        help='Automatically find the latest CSV file')
     
     args = parser.parse_args()
     
-    # 打印当前工作目录信息
     print(f"Current working directory: {os.getcwd()}")
     print(f"Output directory: {args.output}")
     
@@ -629,7 +626,6 @@ class FactorAnalyzer:
             output_dir: Directory to save analysis plots
         """
         self.csv_file = csv_file_path
-        # 修改默认输出目录为当前工作目录
         self.output_dir = output_dir or os.getcwd()
         self.data = None
         self.setup_plotting()
@@ -651,11 +647,10 @@ class FactorAnalyzer:
         
     def find_latest_csv(self, csv_dir=None):
         """Find the latest state CSV file in the given directory"""
-        # 如果没有指定目录，优先在当前目录查找，然后在默认输出目录查找
         if csv_dir is None:
             search_dirs = [
-                os.getcwd(),  # 当前工作目录
-                "/home/jay/batch_board/output"  # 默认输出目录作为备选
+                os.getcwd(),
+                "/home/jay/batch_board/output"
             ]
         else:
             search_dirs = [csv_dir]
@@ -769,13 +764,13 @@ class FactorAnalyzer:
         factor_cols = ['total_gnss_pos_factors', 'total_gnss_vel_factors', 
                       'total_imu_factors', 'total_bias_factors', 'total_prior_factors']
         
-        # 定义颜色和标签的映射
+        # Define colors and labels for each factor type
         factor_colors = {
-            'total_gnss_pos_factors': '#1f77b4',  # 蓝色
-            'total_gnss_vel_factors': '#ff7f0e',  # 橙色  
-            'total_imu_factors': '#2ca02c',       # 绿色
-            'total_bias_factors': '#d62728',      # 红色
-            'total_prior_factors': '#9467bd'      # 紫色
+            'total_gnss_pos_factors': '#1f77b4',  # Blue
+            'total_gnss_vel_factors': '#ff7f0e',  # Orange  
+            'total_imu_factors': '#2ca02c',       # Green
+            'total_bias_factors': '#d62728',      # Red
+            'total_prior_factors': '#9467bd'      # Purple
         }
         
         factor_labels = {
@@ -803,7 +798,7 @@ class FactorAnalyzer:
             ax2.legend(loc='upper left', framealpha=0.9)
             ax2.grid(True, alpha=0.3)
             
-            # 添加最终数量的文本标注
+            # Add final count annotations
             for col in valid_cols:
                 final_count = self.data[col].iloc[-1]
                 final_time = self.data['relative_time_min'].iloc[-1]
@@ -829,7 +824,7 @@ class FactorAnalyzer:
             cbar = plt.colorbar(scatter, ax=ax3)
             cbar.set_label('Time (minutes)')
             
-            # 添加趋势线
+            # Add trend line
             if len(self.data) > 2:
                 z = np.polyfit(self.data['keyframe_count'], self.data['total_factors'], 1)
                 p = np.poly1d(z)
@@ -838,17 +833,17 @@ class FactorAnalyzer:
                         label=f'Trend: {z[0]:.1f} factors/keyframe')
                 ax3.legend()
             
-        # Plot 4: Factor增长速度 (每轮优化新增的因子数量)
+        # Plot 4: Factor growth rate (new factors added per optimization round)
         ax4 = axes[1, 1]
         
-        # 计算每轮优化新增的因子数量
+        # Calculate new factors added per optimization round
         factor_cols_for_growth = ['total_gnss_pos_factors', 'total_gnss_vel_factors', 
                                  'total_imu_factors', 'total_bias_factors']
         
         valid_growth_cols = [col for col in factor_cols_for_growth if col in self.data.columns]
         
         if valid_growth_cols:
-            # 创建柱状图显示每轮新增的因子
+            # Create bar chart showing new factors added per optimization round
             x_positions = range(len(self.data))
             bar_width = 0.8
             bottom = np.zeros(len(self.data))
@@ -868,11 +863,11 @@ class FactorAnalyzer:
             }
             
             for col in valid_growth_cols:
-                # 计算每轮新增数量 (当前值 - 前一个值)
+                # Calculate new factors added per optimization round (current value - previous value)
                 factor_diff = self.data[col].diff().fillna(self.data[col].iloc[0])
-                factor_diff = factor_diff.clip(lower=0)  # 确保非负值
+                factor_diff = factor_diff.clip(lower=0)  # Ensure non-negative values
                 
-                if factor_diff.sum() > 0:  # 只有当有增长时才绘制
+                if factor_diff.sum() > 0:  # Only plot if there is growth
                     ax4.bar(x_positions, factor_diff, 
                            bottom=bottom,
                            width=bar_width,
@@ -887,13 +882,11 @@ class FactorAnalyzer:
             ax4.legend(loc='upper right', framealpha=0.9)
             ax4.grid(True, alpha=0.3, axis='y')
             
-            # 设置x轴标签，每隔几个显示一次避免拥挤
             if len(self.data) > 20:
                 step = len(self.data) // 10
                 ax4.set_xticks(range(0, len(self.data), step))
                 ax4.set_xticklabels(range(0, len(self.data), step))
-            
-            # 添加总数统计
+            # Add total count annotation
             total_new = bottom.sum()
             ax4.text(0.02, 0.98, f'Total new factors: {int(total_new)}', 
                     transform=ax4.transAxes, 
@@ -1166,14 +1159,13 @@ def main():
     parser = argparse.ArgumentParser(description='Analyze GNSS-IMU fusion factor graph data')
     parser.add_argument('--csv', '-c', type=str, help='Path to CSV state file')
     parser.add_argument('--output', '-o', type=str, 
-                       default=os.getcwd(),  # 修改默认输出目录为当前工作目录
+                       default=os.getcwd(),
                        help='Output directory for plots and reports (default: current directory)')
     parser.add_argument('--auto', '-a', action='store_true',
                        help='Automatically find the latest CSV file')
     
     args = parser.parse_args()
     
-    # 打印当前工作目录信息
     print(f"Current working directory: {os.getcwd()}")
     print(f"Output directory: {args.output}")
     
