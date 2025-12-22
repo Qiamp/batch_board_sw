@@ -284,3 +284,18 @@ The node can export key signals and metrics to CSV. Ensure the directory exists 
 This project was developed in the context of the **AAE4302** course offered by the Department of Aeronautical and Aviation Engineering at  **The Hong Kong Polytechnic University (PolyU)** .
 
 The authors would like to acknowledge the course for providing a solid theoretical foundation and practical framework in navigation, sensor fusion, and state estimation, which greatly contributed to the design and implementation of ToySLAM.
+
+## License
+
+This project is licensed under the [GNU General Public License v3.0 (GPL-3.0)](https://www.gnu.org/licenses/gpl-3.0.html).
+
+### Third-Party Software
+
+This project includes and/or is derived from the following GPL-3.0 and BSD licensed projects:
+
+- gnss_comm
+  Source: https://github.com/HKUST-Aerial-Robotics/gnss_comm.git
+  License: GPL-3.0
+- novatel_span_driver
+  Source: https://github.com/ros-drivers/novatel_span_driver.git
+  License: BSD
