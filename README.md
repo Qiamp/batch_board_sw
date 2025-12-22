@@ -85,21 +85,17 @@ The central sensor-fusion node supports IMU pre-integration, online bias estimat
   sudo apt-get install libgoogle-glog-dev
   ```
 
-## 构建步骤
+## Build Instructions
 
-1. 创建工作区并克隆仓库（假设路径 `~/catkin_ws/src`）：
-
-   ```bash
-   cd ~/catkin_ws/src
-   git clone <repo_url> batch_board_sw
-   ```
-2. 安装系统依赖（以 Ubuntu20.04/ROS Noetic 为例）：
+1. **Create a workspace and clone the repository
+   (Assuming the workspace path is `~/toyslam_ws/src`):**
 
    ```bash
-   sudo apt-get install libeigen3-dev libceres-dev ros-$ROS_DISTRO-rviz
-   sudo apt-get install libgoogle-glog-dev  # gnss_comm 需要
+   mkdir ~/toyslam_ws/src
+   cd ~/toyslam_ws/src
+   git clone https://github.com/Qiamp/batch_board_sw.git
    ```
-3. 在工作区根目录编译并加载环境：
+2. **Build the workspace and source the environment** :
 
    ```bash
    cd ~/catkin_ws
@@ -107,40 +103,136 @@ The central sensor-fusion node supports IMU pre-integration, online bias estimat
    source devel/setup.bash
    ```
 
-   构建流程与 `gnss_comm` 文档保持一致，使用 catkin_make 生成可执行文件。【F:src/gnss_comm/README.md†L34-L45】
+## Quick Start
 
-## 快速开始
-
-1. 解压示例数据：`unzip data/rosbag/demo_rosbag.zip -d data/rosbag`。
-2. 启动融合节点与可视化（默认启用 RViz）：
+1. **Extract the demo dataset** :
+   `unzip data/rosbag/demo_rosbag.zip -d data/rosbag`。
+2. **Launch the fusion node and visualization**
+   (RViz is enabled by default):
 
    ```bash
    roslaunch toyslam batch_board.launch
    ```
 
-   启动文件允许切换 GPS/IMU 话题、开启偏置估计与滑窗大小等参数。【F:src/toyslam/launch/batch_board.launch†L4-L118】
-3. 回放 rosbag（示例文件名以解压后实际为准）：
+   The launch file allows users to configure GPS/IMU topics, enable or disable bias estimation, and adjust the sliding-window size and other parameters.
+3. **Play the rosbag：**
 
    ```bash
-   rosbag play data/rosbag/<your_demo>.bag
+   rosbag play data/rosbag/demo.bag
    ```
-4. 如需在服务器或无界面环境运行，可将 `rviz:=false` 关闭可视化。【F:src/toyslam/launch/batch_board.launch†L2-L74】
+4. **Run without visualization (e.g., on a server or headless system)** :
 
-## 关键参数
+   ```
+   roslaunch toyslam batch_board.launch rviz:=false
+   ```
 
-- **传感器话题**：`imu_topic`、`gps_topic`、`gps_message_type` 用于指定输入数据源。【F:src/toyslam/launch/batch_board.launch†L6-L28】
-- **优化配置**：`optimization_window_size`、`optimization_frequency`、`max_iterations` 控制滑窗大小与 Ceres 迭代步数。【F:src/toyslam/launch/batch_board.launch†L34-L40】
-- **噪声与偏置**：`imu_acc_noise`、`imu_gyro_noise`、偏置随机游走与初值参数可根据设备调整。【F:src/toyslam/launch/batch_board.launch†L42-L57】
-- **约束开关**：`use_gps_velocity`、`enable_velocity_constraint`、`enable_roll_pitch_constraint`、`enable_orientation_smoothness_factor` 用于选择速度/姿态约束及其权重。【F:src/toyslam/launch/batch_board.launch†L59-L71】
-- **日志输出**：`gps_log_path`、`gt_log_path`、`optimized_log_path`、`results_log_path`、`metrics_log_path`、`bias_log_path` 指定 CSV 写入位置，请确保目录存在。【F:src/toyslam/launch/batch_board.launch†L20-L25】【F:src/toyslam/launch/batch_board.launch†L126-L131】
+## Key Parameters
 
-## 数据记录与后处理
+### 1) Sensor Topics and Input Configuration
 
-- 轨迹、真值、优化结果与评估指标会以 CSV 形式输出到 `data/results/` 下的指定文件名，便于进一步对齐或绘图分析。【F:src/toyslam/launch/batch_board.launch†L20-L131】
-- `helper_scripts/analysis_freq.py` 可对 rosbag 话题频率、抖动进行统计和可视化，帮助评估传感器时序质量。【F:src/helper_scripts/analysis_freq.py†L1-L120】
+* **`imu_topic`** : ROS topic for IMU measurements (e.g., `sensor_msgs/Imu`).
+
+  Used for IMU pre-integration and state propagation inside the sliding window.
+* **`gps_topic`** : ROS topic for GNSS measurements (topic name depends on your data source).
+* **`gps_message_type`** : Selects the GNSS message format and the corresponding callback/decoder.
+
+  Supported options:
+* `inspvax` → subscribes as **`novatel_msgs/INSPVAX`**
+* `gnss_comm` → subscribes as **`gnss_comm/GnssPVTSolnMsg`**
+* `odometry` → subscribes as **`nav_msgs/Odometry`**
+
+  This parameter controls how GNSS position/velocity (and optional attitude) are extracted and fed into the optimizer.
+* **`use_gps`** : Master switch to enable/disable GNSS updates (useful for IMU-only debugging).
+
+### 2) Frames and Coordinate Conventions
+
+* **`world_frame_id`** : Global/world reference frame (default: `map`).
+* **`body_frame_id`** : Body frame attached to the platform (default: `base_link`).
+
+  These frame IDs are used for publishing and visualization consistency (e.g., RViz trajectories).
+
+### 3) Sliding-Window Optimization Settings
+
+* **`optimization_window_size`** : Number of keyframes maintained in the sliding window.
+
+  Larger windows may improve accuracy but increase computation.
+* **`optimization_frequency`** : Optimizer execution frequency (Hz).
+
+  Controls how often the nonlinear solver runs.
+* **`max_iterations`** : Maximum number of Ceres iterations per optimization cycle.
+* **`enable_marginalization`** : Enables marginalization to keep historical information while bounding the problem size.
+
+  When enabled, older states are marginalized out and their information is preserved as a prior.
+
+### 4) IMU Noise Model, Biases, and Pre-integration Controls
+
+* **`imu_acc_noise`** ,  **`imu_gyro_noise`** : IMU white noise parameters used in pre-integration weighting.
+* **`imu_acc_bias_noise`** ,  **`imu_gyro_bias_noise`** : Bias random-walk noise (process model strength for bias evolution).
+* **`enable_bias_estimation`** : Enables online estimation of accelerometer/gyroscope biases.
+* **`initial_acc_bias_{x,y,z}`** ,  **`initial_gyro_bias_{x,y,z}`** : Initial bias values used at startup (or for the first keyframe).
+* **`max_integration_dt`** : Upper bound on the integration time step for IMU pre-integration (s).
+
+  Helps maintain numerical stability when IMU timestamps are irregular.
+* **`bias_correction_threshold`** : Threshold for bias correction behavior during pre-integration (used as a safeguard against excessive bias updates).
+
+### 5) GNSS Usage, Constraints, and Weights
+
+* **`use_gps_velocity`** : Whether GNSS velocity is read/used by the system (if available in the selected message type).
+* **`enable_velocity_constraint`** : Enables GNSS velocity as an optimization factor/constraint inside the sliding window.
+* **`gps_position_noise`** ,  **`gps_velocity_noise`** : Measurement noise (std) for GNSS position/velocity residuals, directly affecting factor weighting.
+* **`use_gps_orientation_as_initial`** : If the GNSS message provides orientation (e.g., INSPVAX), use it as the **initial value** for new keyframes (initialization only; not necessarily a constraint unless enabled elsewhere).
+* **`enable_roll_pitch_constraint`** : Adds a “near-zero roll/pitch” constraint (typically for ground vehicles).
+* **`enable_orientation_smoothness_factor`** : Adds an orientation smoothness factor to suppress rapid attitude changes.
+* **Weights** (effective when the corresponding factors are enabled):
+  * **`velocity_constraint_weight`**
+  * **`roll_pitch_weight`**
+  * **`orientation_smoothness_weight`**
+* **Sanity/robustness limits** :
+* **`max_velocity`** : Rejects/limits unrealistically large velocities.
+* **`min_horizontal_velocity`** : Optional minimum horizontal speed threshold to maintain motion observability or filter out near-static artifacts.
+
+### 6) Gravity and Optional Artificial Noise Injection
+
+* **`gravity_magnitude`** : Local gravity magnitude (m/s²) used in IMU propagation (defaults to ~9.785).
+
+  Set according to your region/model if needed.
+* **`artificial_pos_noise_std`** ,  **`artificial_vel_noise_std`** : Injects artificial noise into position/velocity (primarily for stress-testing and robustness evaluation).
+
+### 7) Ground Truth Subscription (Optional)
+
+* **`subscribe_to_ground_truth`** : Enables ground truth subscription for evaluation/logging.
+* **`ground_truth_topic`** : Ground truth topic name (e.g., `novatel_msgs/INSPVAX` stream used as GT in some datasets).
+
+### 8) Logging and Output Paths (CSV)
+
+The node can export key signals and metrics to CSV. Ensure the directory exists and is writable:
+
+* **`gps_log_path`** : Raw GNSS inputs (position/velocity, etc.)
+* **`gt_log_path`** : Ground truth (if enabled)
+* **`optimized_log_path`** : Optimized states/trajectory from sliding-window solver
+* **`results_log_path`** : Summary results (e.g., final statistics)
+* **`metrics_log_path`** : Performance metrics over time (e.g., errors, RMSE, status)
+* **`bias_log_path`** : Estimated accelerometer/gyro biases over time
+
+### 9) Visualization
+
+* **`rviz`** (launch arg): Enables RViz visualization using the provided config file (`gps_trajectory.rviz`).
+
+  Set `rviz:=false` for headless/server runs.
+
+## Data Logging and Post-processing
+
+* Trajectories, ground truth, optimized states, and evaluation metrics are exported as CSV files to the specified paths under `data/results/`. This facilitates further alignment, visualization, and quantitative analysis using external tools (e.g., Python or MATLAB).
+* The script `helper_scripts/analysis_freq.py` can be used to analyze and visualize rosbag topic frequencies and timing jitter, helping to assess sensor timing quality and data consistency.
+
+## Sample Result
+
+<p align="center">
+  <img src="data/results/demo.gif" alt="ToySLAM Demo" width="800"/>
+</p>
 
 ## 参考资料
 
 - `support_files/toySLAM_Tutorial.pdf`：包含算法推导与实验说明。
-- `gnss_comm` README 提供 GNSS 原始测量处理的背景与依赖说明。【F:src/gnss_comm/README.md†L1-L60】
+- `gnss_comm` 提供 GNSS 原始测量处理的背景与依赖说明。【F:src/gnss_comm/README.md†L1-L60】
 - NovAtel 官方 Wiki 链接在 `novatel_span_driver` README 中，可获取设备配置详情。【F:src/novatel_span_driver/README.md†L1-L8】
