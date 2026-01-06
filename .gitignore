@@ -1,5 +1,5 @@
 # =========================
-# ROS 工作空间构建产物
+# ROS workspace build files
 # =========================
 build/
 build_isolated/
@@ -9,7 +9,7 @@ install/
 log/
 logs/
 
-# colcon / catkin 元数据
+# colcon / catkin meta files
 .colcon/
 .catkin_tools/
 
@@ -26,7 +26,7 @@ genpy/
 genlisp/
 
 # =========================
-# CMake / Make 构建文件
+# CMake / Make build files
 # =========================
 CMakeCache.txt
 CMakeFiles/
@@ -44,7 +44,7 @@ __pycache__/
 *.pyd
 
 # =========================
-# 编辑器 / 临时文件
+# Editor temp files
 # =========================
 *~
 *.swp
@@ -53,7 +53,7 @@ __pycache__/
 .idea/
 
 # =========================
-# 二进制 / 目标文件
+# binary / compiled files
 # =========================
 *.o
 *.lo
@@ -72,7 +72,7 @@ __pycache__/
 *.tmp
 
 # =========================
-# 测试覆盖/报告
+# Code coverage files
 # =========================
 coverage/
 *.gcno
@@ -80,16 +80,13 @@ coverage/
 *.gcov
 
 # =========================
-# 其他打包缓存
+# Other build artifacts
 # =========================
 dist/
 .eggs/
 *.egg-info
 
 # =========================
-# ROS2 colcon 测试结果
+# ROS2 colcon test results
 # =========================
 test_results/
-
-# 若需要跟踪某目录，可用 ! 取消忽略
-# 例如：!log/README.md
