@@ -4591,7 +4591,7 @@ private:
             }
             // ROS_INFO("after IMU integration: timestamp %.3f", timestamp);
             
-            ROS_INFO("imu_msg.orientation_covariance[0] %.3f", imu_msg.orientation_covariance[0]);
+            // ROS_INFO("imu_msg.orientation_covariance[0] %.3f", imu_msg.orientation_covariance[0]);
             // Use IMU orientation if available
             // if (imu_msg.orientation_covariance[0] != -1) {
             if (0) {
