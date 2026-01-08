@@ -151,7 +151,7 @@ The central sensor-fusion node supports IMU pre-integration, online bias estimat
 
 ### For Host installation
 
-1. **Create a workspace and clone the repository
+1. **Create a workspace and clone the repository**
 
    ```bash
    mkdir -p ~/tasfusion_ws/src
