@@ -135,7 +135,7 @@ The central sensor-fusion node supports IMU pre-integration, online bias estimat
    ```bash
    mkdir ~/tasfusion_ws/src
    cd ~/tasfusion_ws/src
-   git clone https://github.com/Qiamp/batch_board_sw.git
+   git clone https://github.com/Qiamp/TasFusion.git
    ```
 2. **Build the workspace and source the environment** :
 
