@@ -42,7 +42,7 @@ GNSS / IMU Sliding-Window Optimization Framework
   https://polyu-taslab.github.io/
 </p>
 
-## Overview
+## 1. Overview
 
 TasFusion is a ROS1 package designed for multi-sensor navigation. Its core functionality provides a Ceres-based GNSS/IMU loosely coupled sliding-window optimization framework, along with supporting tools including GNSS message definitions, NLOS exclusion utilities, a NovAtel driver, and NMEA ROS parsing scripts.
 
@@ -68,7 +68,7 @@ The central sensor-fusion node supports IMU pre-integration, online bias estimat
 >
 > For inquiries regarding this hardware platform, please contact **hbwu@hkpolyu-wxresearch.cn**.
 
-## Acknowledgement
+## 2. Acknowledgement
 
 This project was developed in the context of the **AAE4203** course offered by the Department of Aeronautical and Aviation Engineering at  **The Hong Kong Polytechnic University (PolyU)** .
 
@@ -76,7 +76,7 @@ The authors would like to acknowledge the course for providing a solid theoretic
 
 The authors also gratefully acknowledge the Research Center for Autonomous System in Smart Transportation, PolyU-Wuxi Technology and Innovation Research Institute, for its technical support, research environment, and resources that facilitated the development and validation of this work.
 
-## Key Features
+## 3. Key Features
 
 * **Sliding-Window Nonlinear Optimization with Marginalization**
 
@@ -100,7 +100,7 @@ The authors also gratefully acknowledge the Research Center for Autonomous Syste
 
   This design allows seamless integration with different GNSS receivers and data pipelines.
 
-## Repository Structure
+## 4. Repository Structure
 
 * **`tasfusion/`**
 
@@ -130,7 +130,7 @@ The authors also gratefully acknowledge the Research Center for Autonomous Syste
 
   Directory for storing output results, logs, and exported CSV files.
 
-## Enviroment & Dependencies
+## 5. Environment & Dependencies
 
 - This package is developed under Ubuntu20.04 LTSC [ROS Noetic](https://wiki.ros.org/noetic/Installation/Ubuntu) environment.
 - Use [Eigen 3.3.4](https://gitlab.com/libeigen/eigen/-/archive/3.3.4/eigen-3.3.4.zip) for matrix manipulation.
@@ -155,7 +155,7 @@ The authors also gratefully acknowledge the Research Center for Autonomous Syste
   sudo apt-get install libgoogle-glog-dev
   ```
 
-## Build Instructions
+## 6. Build Instructions
 
 ### For Host installation
 
@@ -193,7 +193,7 @@ The authors also gratefully acknowledge the Research Center for Autonomous Syste
    source devel/setup.bash
    ```
 
-## Quick Start
+## 7. Quick Start
 
 1. **Extract the demo dataset** :
    `unzip data/rosbag/demo_rosbag.zip -d data/rosbag`
@@ -219,7 +219,7 @@ The authors also gratefully acknowledge the Research Center for Autonomous Syste
    roslaunch tasfusion batch_board.launch rviz:=false
    ```
 
-## Key Parameters
+## 8. Key Parameters
 
 ### 1) Sensor Topics and Input Configuration
 
@@ -313,19 +313,19 @@ The node can export key signals and metrics to CSV. Ensure the directory exists 
 
   Set `rviz:=false` for headless/server runs.
 
-## Data Logging and Post-processing
+## 9. Data Logging and Post-processing
 
 * Trajectories, ground truth, optimized states, and evaluation metrics are exported as CSV files to the specified paths under `data/results/`. This facilitates further alignment, visualization, and quantitative analysis using external tools (e.g., Python or MATLAB).
 * The script `helper_scripts/analysis_freq.py` can be used to analyze and visualize rosbag topic frequencies and timing jitter, helping to assess sensor timing quality and data consistency.
 
-## References
+## 10. References
 
 * **`Support_files/tasfusion_Tutorial.pdf` :** Detailed algorithm derivations and experimental explanations.
 * **[GNSS_COMM Official Wiki](https://github.com/HKUST-Aerial-Robotics/gnss_comm)** : Documentation for GNSS raw measurement definitions and related tools.
 * **[NovAtel Official Wiki](https://wiki.ros.org/novatel_span_driver)** : Official documentation for NovAtel GNSS/INS receivers and message formats.
 
 
-## License
+## 11. License
 
 This project is licensed under the [GNU General Public License v3.0 (GPL-3.0)](https://www.gnu.org/licenses/gpl-3.0.html).
 
